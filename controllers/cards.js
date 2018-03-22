@@ -21,5 +21,14 @@ module.exports ={
         data : data
       })
     })
+  },
+  readCards : (req,res)=>{
+    var starCountRef = firebase.database().ref('cards/');
+    starCountRef.on('value', function(snapshot) {
+      res.status(201).json({
+        message : 'read data success',
+        data : snapshot 
+      })
+    });
   }
 }
