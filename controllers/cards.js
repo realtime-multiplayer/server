@@ -8,19 +8,27 @@ const config = {
 firebase.initializeApp(config);
 const db = firebase.database()
 
+
 module.exports = {
   addCard: (req, res) => {
     db.ref('cards/').push({
       name: req.body.name,
-      value: req.body.value,
-      image: req.file.cloudStoragePublicUrl
+      value: req.body.value
+      // image: req.file.cloudStoragePublicUrl
     })
-      
-    return res.status(201).json({
-      message: 'add card success',
-      data: data
-    })
-      
+      .then(data => {
+        res.status(201).json({
+          message: 'add card success',
+          data: data
+        })
+      })
+      .catch(err=>{
+        res.status(400).json({
+          message : 'error add card',
+          data : {}
+        })
+      })
+
   },
   readCards: (req, res) => {
     var starCountRef = firebase.database().ref('cards/');
