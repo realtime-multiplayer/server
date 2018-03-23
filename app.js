@@ -29,7 +29,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/cards',cards)
-//firebase key 
+
+// Socket IO
+// var server = require('http').createServer(app);
+// var io = require('socket.io')(server);
+
+// io.on('connection', function (socket) {
+//   socket.emit('userid', socket.id)
+//   socket.on('joinuser', (value) => {
+//     socket.join('getthebunny');
+//     io.to('getthebunny').emit('receivemessage', value);
+//   })
+//   socket.on('disconnect', function () {
+//       console.log('user disconnected');
+//       socket.emit('userdisconnect', socket.id)
+//   });
+// });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -48,5 +63,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// server.listen(3000, ()=>{
+//   console.log('Oke Oce')
+// })
 
 module.exports = app;
