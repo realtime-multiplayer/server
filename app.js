@@ -10,15 +10,8 @@ var users = require('./routes/users');
 const cards = require('./routes/cards')
 var app = express();
 
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+// var server = require('http').createServer(app);
 
-io.on('connection', function (socket) {
-  console.log('a user connected '+socket.id);
-  socket.on('disconnect', function () {
-      console.log('user disconnected');
-  });
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
