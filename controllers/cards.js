@@ -27,14 +27,16 @@ module.exports = {
     starCountRef.on('value', function (snapshot) {
       res.status(201).json({
         message: 'read data success',
-        data: snapshot
+        data: snapshot.val()
       })
     });
   },
   addPlayer: (req, res) => {
     db.ref('users/').push({
       name: req.body.name,
-      room: req.body.room
+      room: req.body.room,
+      userid: req.body.userid,
+      cards: []
     })
       .then(data => {
         res.status(201).json({
@@ -46,9 +48,14 @@ module.exports = {
   getPlayer: (req, res) => {
     var users = firebase.database().ref('users/');
     users.on('value', function (snapshot) {
+
+      // Object.keys(snapshot).forEach((key, index)=>{
+      //   console.log(snapshot.val())
+      // })
+      
       res.status(201).json({
         message: 'read data success',
-        data: snapshot
+        data: snapshot.val()
       })
     });
   },
