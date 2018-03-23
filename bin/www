@@ -1,0 +1,120 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('server:server');
+var http = require('http');
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+var io = require('socket.io')(server);
+
+io.on('connection', function (socket) {
+  console.log('a user connected '+socket.id);
+  // socket.emit('welcome')
+  socket.emit('userid', socket.id)
+
+  socket.on('joinuser', (value) => {
+    console.log('a user joined getthebunny')
+    socket.join('getthebunny');
+    io.to('getthebunny').emit('receivemessage', value);
+  })
+  socket.on('disconnect', function () {
+      console.log('user disconnected');
+      socket.emit('userdisconnect', socket.id)
+  });
+
+  socket.on('hit', function(payload){
+    console.log(payload.username + ' hit a new card')
+    socket.emit('drawCard', {value: 1})
+    // sending to all clients in 'game' room except sender
+    socket.to('getthebunny').emit('opponentDraw', 'opponent has drawn a card');
+  })
+
+  socket.on('stand', function(payload){
+    console.log(payload.username + ' has delcared stand')
+    socket.emit('standingBy', {username:'you'})
+    socket.to('getthebunny').emit('opponentDraw', 'opponent is standing by');
+  })
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
