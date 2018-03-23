@@ -15,7 +15,6 @@ router.post('/add',upload.single('image'),sendUploadToGCS,addCard)
 router.get('/show',readCards)
 router.post('/addPlayer', addPlayer);
 router.get('/getPlayer', getPlayer);
-router.delete('/removePlayer/:id', removePlayer);
 
 
 module.exports = router

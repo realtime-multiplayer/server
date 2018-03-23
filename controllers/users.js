@@ -15,7 +15,7 @@ module.exports ={
       room : req.body.room
     })
     .then(data=>{
-      res.status(201).json({
+      return res.status(201).json({
         message : 'add users success',
         data : data
       })
@@ -24,7 +24,7 @@ module.exports ={
   getUser : (req,res)=>{
     var users = firebase.database().ref('users/');
     users.on('value', function(snapshot) {
-      res.status(201).json({
+      return res.status(201).json({
         message : 'read data success',
         data : snapshot 
       })
