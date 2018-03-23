@@ -13,8 +13,8 @@ var app = express();
 
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
-// Socket
 
+// Socket
 io.on('connection', (socket)=>{
   const iduser = socket.id
   socket.broadcast.emit('userid', iduser)
