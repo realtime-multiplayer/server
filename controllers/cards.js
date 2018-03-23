@@ -39,10 +39,9 @@ module.exports = {
       userid: req.body.userid,
       cards: []
     })
-    .then(data => {
+    .then(() => {
       return res.status(201).json({
         message: 'add users success',
-        data: data
       })
     })
   },
