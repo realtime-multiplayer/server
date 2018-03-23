@@ -11,6 +11,20 @@ var users = require('./routes/users');
 
 var app = express();
 
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+// Socket
+
+io.on('connection', (socket)=>{
+  const iduser = socket.id
+  socket.broadcast.emit('userid', iduser)
+  
+  socket.on('joinuser', (value) => {
+    socket.join('getthebunny');
+    io.to('getthebunny').emit('receivemessage', value.username);
+  })
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -33,6 +47,7 @@ var config = {
   databaseURL: "https://nth-cumulus-197904.firebaseio.com",
   storageBucket: "nth-cumulus-197904.appspot.com",
 };
+
 firebase.initializeApp(config);
 var db = firebase.database()
 
@@ -53,5 +68,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+server.listen(3000, () => {
+  console.log('connected')
+})
 
 module.exports = app;
