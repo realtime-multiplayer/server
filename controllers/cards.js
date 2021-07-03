@@ -28,50 +28,39 @@ module.exports = {
           data : {}
         })
       })
+
   },
   readCards: (req, res) => {
     var starCountRef = firebase.database().ref('cards/');
     starCountRef.on('value', function (snapshot) {
-      res.status(201).json({
+      let data = snapshot.val()
+      return res.status(201).json({
         message: 'read data success',
-        data: snapshot.val()
+        data: data
       })
     });
   },
   addPlayer: (req, res) => {
-    db.ref('users/').push({
+     db.ref('users/').push({
       name: req.body.name,
       room: req.body.room,
       userid: req.body.userid,
       cards: []
     })
-      .then(data => {
-        res.status(201).json({
-          message: 'add users success',
-          data: data
-        })
+    .then(() => {
+      return res.status(201).json({
+        message: 'add users success',
       })
+    })
   },
   getPlayer: (req, res) => {
     var users = firebase.database().ref('users/');
-    users.on('value', function (snapshot) {
-
-      // Object.keys(snapshot).forEach((key, index)=>{
-      //   console.log(snapshot.val())
-      // })
-      
-      res.status(201).json({
+    users.on('value', function (snapshot) {    
+      let data = snapshot.val()
+      return res.status(201).json({
         message: 'read data success',
-        data: snapshot.val()
+        data: data
       })
     });
-  },
-  removePlayer: (req, res) => {
-    db.ref(`users/${req.params.id}`).remove()
-      .then(
-        res.status(201).json({
-          message: 'remove data success',
-        })
-      )
   }
 }

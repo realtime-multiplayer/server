@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+
 
 /**
  * Module dependencies.
@@ -37,9 +37,23 @@ io.on('connection', function (socket) {
       socket.emit('userdisconnect', socket.id)
   });
 
+  socket.on('getrandom', function (value){
+    let getcardindex = []
+    for(let i = 0; i < 8; i++){
+      let index = Math.floor(Math.random() * value.length)
+      getcardindex.push(value[index])
+      value.splice(index,1)
+
+    }
+    console.log(getcardindex)
+    socket.broadcast.emit('getcards', getcardindex);
+    socket.emit('getcards', getcardindex);
+    
+  }) 
+
   socket.on('hit', function(payload){
-    console.log(payload.username + ' hit a new card')
-    socket.emit('drawCard', {value: 1})
+    const id = socket.id
+    socket.emit('drawCard', {socketid: id})
     // sending to all clients in 'game' room except sender
     socket.to('getthebunny').emit('opponentDraw', 'opponent has drawn a card');
   })
